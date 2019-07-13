@@ -2,7 +2,7 @@ import models from '../models'
 export default {
     add: async(req, res, next) => {
         try {
-            const reg = await models.Category.create(req.body)
+            const reg = await models.Article.create(req.body)
             res.status(200).json(reg)
         } catch(e) {
             res.status(500).send({
@@ -13,7 +13,8 @@ export default {
     },
     query: async(req, res, next) => {
         try {
-            const reg= await models.Category.findOne({ _id: req.query._id})
+            const reg= await models.Article.findOne({ _id: req.query._id})
+            .populate('category', {name:1});
             if(!reg){
                 res.status(404).send({
                     message: "¡El registro solicitado, no existe!"
@@ -31,7 +32,8 @@ export default {
     list: async(req, res, next) => {
         try {
             let value= req.query.value
-            const reg= await models.Category.find({$or:[{'name': new RegExp(value, 'i')}, {'description': new RegExp(value, 'i')}]},{createdAt:0})
+            const reg= await models.Article.find({$or:[{'name': new RegExp(value, 'i')}, {'description': new RegExp(value, 'i')}]},{createdAt:0})
+            .populate('category', {name:1})
             .sort({'createAt':-1});
             res.status(200).json(reg)
         } catch(e) {
@@ -43,7 +45,16 @@ export default {
     },
     update: async(req, res, next) => {
         try {
-            const reg= await models.Category.findByIdAndUpdate({_id:req.body._id},{name: req.body.name, description:  req.body.description });
+            const reg= await models.Article.findByIdAndUpdate(
+                {_id:req.body._id},
+                {
+                    category: req.body.category, 
+                    code: req.body.code, 
+                    name: req.body.name, 
+                    description: req.body.description, 
+                    price: req.body.price, 
+                    stock: req.body.stock 
+                });
             res.status(200).json(reg);
         } catch(e) {
             res.status(500).send({
@@ -54,7 +65,7 @@ export default {
     },
     remove: async(req, res, next) => {
         try {
-            const reg = await models.Category.findByIdAndDelete({_id: req.body._id})
+            const reg = await models.Article.findByIdAndDelete({_id: req.body._id})
             res.status(200).json(reg)
         } catch(e) {
             res.status(500).send({
@@ -65,7 +76,7 @@ export default {
     },
     activate: async(req, res, next) => {
         try {
-            const reg = await models.Category.findByIdAndUpdate({_id: req.body._id},{state:1}); 
+            const reg = await models.Article.findByIdAndUpdate({_id: req.body._id},{state:1}); 
             res.status(200).json(reg)
         } catch(e) {
             res.status(500).send({
@@ -76,7 +87,7 @@ export default {
     },
     deactivate: async(req, res, next) => {
         try {
-            const reg = await models.Category.findByIdAndUpdate({_id: req.body._id},{state:0}); 
+            const reg = await models.Article.findByIdAndUpdate({_id: req.body._id},{state:0}); 
             res.status(200).json(reg)
         } catch(e) {
             res.status(500).send({
