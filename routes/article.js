@@ -6,6 +6,7 @@ const router= routerx();
 
 router.post('/add', auth.verifyStorekeeper, articleController.add)
 router.get('/query', auth.verifyStorekeeper, articleController.query)
+router.get('/queryCode', auth.verifyUser, articleController.queryCode)
 router.get('/list', auth.verifyStorekeeper, articleController.list)
 router.put('/update', auth.verifyStorekeeper, articleController.update)
 router.delete('/remove', auth.verifyStorekeeper, articleController.remove)
