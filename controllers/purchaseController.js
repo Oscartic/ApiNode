@@ -17,12 +17,12 @@ async function decreaseStock(articleId, quantity) {
 export default {
     add: async(req, res, next) => {
         try {
-            const reg = await models.Income.create(req.body)
+            const reg = await models.Purchase.create(req.body)
             // update increaseStock 
             let details = req.body.details;
             console.log(details)
             details.map(function(x){
-                increaseStock(x._id, x.quantity)
+                decreaseStock(x._id, x.quantity)
             })
 
             res.status(200).json(reg)
@@ -35,7 +35,7 @@ export default {
     },
     query: async(req, res, next) => {
         try {
-            const reg= await models.Income.findOne({ _id: req.query._id})
+            const reg= await models.Purchase.findOne({ _id: req.query._id})
             .populate('user',{ name:1 })
             .populate('person', {name:1 })
             if(!reg){
@@ -55,7 +55,7 @@ export default {
     list: async(req, res, next) => {
         try {
             let value= req.query.value
-            const reg= await models.Income.find({$or:[{'voucher_num': new RegExp(value, 'i')}, {'voucher_serial': new RegExp(value, 'i')}]})
+            const reg= await models.Purchase.find({$or:[{'voucher_num': new RegExp(value, 'i')}, {'voucher_serial': new RegExp(value, 'i')}]})
             .populate('user', {name:1})
             .populate('person', {name:1})
             .sort({'createAt':-1});
@@ -69,11 +69,11 @@ export default {
     },
     activate: async(req, res, next) => {
         try {
-            const reg = await models.Income.findByIdAndUpdate({_id: req.body._id},{state:1}); 
+            const reg = await models.Purchase.findByIdAndUpdate({_id: req.body._id},{state:1}); 
             // update increaseStock 
             let details = reg.details;
             details.map(function(x){
-                increaseStock(x._id, x.quantity)
+                decreaseStock(x._id, x.quantity)
             })
             
             res.status(200).json(reg)
@@ -86,11 +86,11 @@ export default {
     },
     deactivate: async(req, res, next) => {
         try {
-            const reg = await models.Income.findByIdAndUpdate({_id: req.body._id},{state:0}); 
+            const reg = await models.Purchase.findByIdAndUpdate({_id: req.body._id},{state:0}); 
             // update decrease stock
             let details = reg.details;
             details.map(function(x){
-                decreaseStock(x._id, x.quantity)
+                increaseStock(x._id, x.quantity)
             })
 
             res.status(200).json(reg)
