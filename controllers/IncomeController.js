@@ -4,13 +4,13 @@ import { model } from 'mongoose';
 async function increaseStock(articleId, quantity) {
     let { stock } = await models.Article.findOne({_id:articleId});
     let newStock = parseInt(stock) + parseInt(quantity);
-    const reg = await model.Article.findByIdAndUpdate({_id:articleId},{stock:newStock});
+    const reg = await models.Article.findByIdAndUpdate({_id:articleId},{stock:newStock});
 }
 
 async function decreaseStock(articleId, quantity) {
     let { stock } = await models.Article.findOne({_id:articleId});
     let newStock = parseInt(stock) - parseInt(quantity);
-    const reg = await model.Article.findByIdAndUpdate({_id:articleId},{stock:newStock});
+    const reg = await models.Article.findByIdAndUpdate({_id:articleId},{stock:newStock});
 }
 
 
@@ -20,6 +20,7 @@ export default {
             const reg = await models.Income.create(req.body)
             // update increaseStock 
             let details = req.body.details;
+            console.log(details)
             details.map(function(x){
                 increaseStock(x._id, x.quantity)
             })

@@ -10,6 +10,6 @@ router.use('/category', categoryRouter)
 router.use('/article', articleRouter)
 router.use('/user', userRouter)
 router.use('/person', personRouter)
-router.use('./income', incomeRouter)
+router.use('/income', incomeRouter)
 
 export default router
