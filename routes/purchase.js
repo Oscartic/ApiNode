@@ -7,6 +7,7 @@ const router= routerx();
 router.post('/add', auth.verifySeller, purchaseController.add)
 router.get('/query', auth.verifySeller, purchaseController.query)
 router.get('/list', auth.verifySeller, purchaseController.list)
+router.get('/graphic_last_months', auth.verifyUser, purchaseController.graphicLastTwelveMonths)
 router.put('/activate', auth.verifySeller, purchaseController.activate)
 router.put('/deactivate', auth.verifySeller, purchaseController.deactivate)
 

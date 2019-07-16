@@ -101,4 +101,33 @@ export default {
             next(e)
         }
     },
+    graphicLastTwelveMonths: async(req, res, next) => {
+        try {
+            const reg = await models.Purchase.aggregate(
+                [
+                    {
+                        $group:{
+                            _id: {
+                                month: {$month: "$createdAt"}, 
+                                year: {$year: "$createdAt" },
+                            },
+                            total: {$sum: "$total"},
+                            num: {$sum:1}  
+                        }
+                    },
+                    {
+                        $sort:{
+                            "_id.year":-1,"_id.month":-1
+                        }
+                    }
+                ]
+            ).limit(12);
+            res.status(200).json(reg);
+        } catch(e){
+            res.status(500).send({
+                message: 'Ocurrió un error'
+            });
+            next(e);
+        }
+    }
 }
